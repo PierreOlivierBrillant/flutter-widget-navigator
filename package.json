@@ -2,7 +2,7 @@
 	"name": "widget-tree-navigator",
 	"displayName": "Widget Tree Navigator",
 	"description": "%extension.description%",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"publisher": "PierreOlivierBrillant",
 	"license": "MIT",
 	"repository": {
