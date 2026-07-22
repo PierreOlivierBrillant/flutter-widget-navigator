@@ -80,11 +80,39 @@ under their call sites.
 ## Why a hand-written parser
 
 The Dart analysis server already computes this tree and sends it over the
-`dart/textDocument/publishFlutterOutline` LSP notification, but **Dart-Code does not
-expose it to third-party extensions** — its public API only offers `getOutline()`
-(declarations), and the internal `_privateApi` is only attached when Dart-Code runs
-in test mode. Full evidence, with file references, is in the README. Do not "fix"
-the parser by reaching for a Dart-Code API that does not exist.
+`dart/textDocument/publishFlutterOutline` LSP notification. **Do not "fix" the
+parser by reaching for a Dart-Code API that exposes it. There is none.** Verified
+against `Dart-Code/Dart-Code@master` in July 2026:
+
+- `src/extension/api/interfaces.ts` — the public API (`PublicDartExtensionApi`,
+  version 3) only offers `workspace.getOutline()`, which returns the *Dart*
+  outline: declarations. No Flutter outline anywhere in the surface.
+- `src/extension/api/extension_api.ts` — that method calls
+  `fileTracker.waitForOutline()`, not `waitForFlutterOutline…`.
+- `src/extension/analysis/file_tracker.ts` — `onFlutterOutline`,
+  `getFlutterOutlineFor()` and `waitForFlutterOutlineWithLength()` do exist, but
+  they are internal.
+- `src/extension/extension.ts` — the internal `_privateApi` object is attached to
+  the exports only `if (isDartCodeTestRun)`, with the comment "*These are not for
+  use by other extensions*", and `src/shared/constants.ts` defines
+  `isDartCodeTestRun = !!process.env.DART_CODE_IS_TEST_RUN`.
+
+The stream itself is alive: only the Flutter Outline *view* was removed
+(Dart-Code issue #6018), and `analyzer.ts` still enables `flutterOutline` in its
+`initializationOptions` because the UI guides need it. It is documented in the
+Dart SDK's `pkg/analysis_server/tool/lsp_spec/README.md`.
+
+Reaching it would mean running our own `dart language-server` — a second analysis
+server, hundreds of megabytes and tens of seconds on first use — or convincing
+Dart-Code to add `getFlutterOutline()` to its public API. Neither is worth it for
+a student's daily driver.
+
+## Why the help is reimplemented inside the QuickPick
+
+VS Code's accessibility help view (`Alt+F1`) is closed to extensions: `vscode.d.ts`
+exposes no `ariaLabel` and no way to register help text, and the 26 entries of
+`AccessibilityVerbositySettingId` cover no QuickPick. That is why `buildHelpItems()`
+swaps the list contents instead — the focus never moves, so the list stays open.
 
 ## Verifying a change
 
