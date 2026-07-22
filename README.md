@@ -4,16 +4,12 @@ Browse the **widget tree inside a Flutter/Dart `build()` method** in a keyboard-
 list — built for developers who use a screen reader.
 
 <p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=PierreOlivierBrillant.widget-tree-navigator"><img src="https://img.shields.io/visual-studio-marketplace/v/PierreOlivierBrillant.widget-tree-navigator?label=Marketplace&color=007ACC" alt="Visual Studio Marketplace version"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=PierreOlivierBrillant.widget-tree-navigator"><img src="https://img.shields.io/visual-studio-marketplace/i/PierreOlivierBrillant.widget-tree-navigator?label=installs" alt="Marketplace installs"></a>
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
-  <img src="https://img.shields.io/badge/VS%20Code-%E2%89%A5%201.85-007ACC.svg" alt="Requires VS Code 1.85 or newer">
   <img src="https://img.shields.io/badge/languages-EN%20%7C%20FR-blue.svg" alt="English and French">
   <img src="https://img.shields.io/badge/built%20for-screen%20readers-6f42c1.svg" alt="Built for screen readers">
 </p>
-
-<!-- Once published, add the live Marketplace badges here:
-  https://img.shields.io/visual-studio-marketplace/v/PierreOlivierBrillant.widget-tree-navigator
-  https://img.shields.io/visual-studio-marketplace/i/PierreOlivierBrillant.widget-tree-navigator
--->
 
 <p align="center">
   <img src="demo.gif" width="820"
@@ -28,11 +24,16 @@ The interface follows VS Code's display language, in **English and French**.
 
 ## Installation
 
-Until the extension is on the Marketplace, install the packaged file:
+Install from the
+[Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=PierreOlivierBrillant.widget-tree-navigator),
+or from the command line:
 
 ```bash
-code --install-extension widget-tree-navigator-0.1.0.vsix
+code --install-extension PierreOlivierBrillant.widget-tree-navigator
 ```
+
+In VS Code, you can also open the Extensions view (`Ctrl+Shift+X`) and search for
+**Widget Tree Navigator**.
 
 ## Usage
 
