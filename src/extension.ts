@@ -58,8 +58,6 @@ interface Session {
 	/** Currently collapsed nodes. Reset on every open (no persistence). */
 	collapsed: Set<WidgetNode>;
 	separator: string;
-	/** Normal title of the list, remembered so we can restore it after help. */
-	title: string;
 	/** true while the list shows the help instead of the widgets. */
 	helpMode: boolean;
 	/** Where we were before opening help, so we can come back exactly there. */
@@ -143,13 +141,17 @@ async function showOutline(): Promise<void> {
 
 	// --- Building the QuickPick ------------------------------------------------
 	// IMPORTANT FOR SCREEN READERS: VS Code builds the aria-label of the input box
-	// AND of the list by concatenating the placeholder and the title
-	// (`quickInput.ts`, `update()` method, around line 1063). Everything written
-	// here is therefore read out on EVERY open, before the first widget. Hence two
-	// very short strings: the shortcuts live in the help (Alt+F1), not here.
-	const title = vscode.l10n.t("{0}, {1} widgets", fileName(editor.document), total);
+	// by concatenating the placeholder and the title (`quickInput.ts`, `update()`,
+	// around line 1063). That label is read out on every open — and again on every
+	// fold, because replacing `items` empties the tree, which makes VS Code drop
+	// `aria-activedescendant` from the input box (`quickInputController.ts`, around
+	// line 291); with no active item left to announce, the screen reader falls back
+	// to the control itself.
+	//
+	// So we set NO title at all. It would be spoken again on every single fold, and
+	// the filename is something the user already knows. The item count is not lost
+	// either: the list announces the position and size of each row on its own.
 	const quickPick = vscode.window.createQuickPick<ListItem>();
-	quickPick.title = title;
 	quickPick.placeholder = shouldHintHelp()
 		? vscode.l10n.t("Filter widgets. Alt+F1 for help.")
 		: vscode.l10n.t("Filter widgets.");
@@ -163,7 +165,6 @@ async function showOutline(): Promise<void> {
 		parents: buildParentMap(roots),
 		collapsed: new Set(),
 		separator,
-		title,
 		helpMode: false,
 	};
 
@@ -368,7 +369,8 @@ function toggleHelp(): void {
 	}
 
 	session.helpMode = false;
-	quickPick.title = session.title;
+	// Back to no title at all: see the note where the QuickPick is created.
+	quickPick.title = undefined;
 	quickPick.items = buildItems(
 		session.roots,
 		session.editor.document,
@@ -378,11 +380,4 @@ function toggleHelp(): void {
 	quickPick.value = session.beforeHelp?.filter ?? "";
 	if (session.beforeHelp?.node) { setActive(session.beforeHelp.node); }
 	session.beforeHelp = undefined;
-}
-
-// ---------------------------------------------------------------------------
-
-function fileName(document: vscode.TextDocument): string {
-	const parts = document.uri.path.split("/");
-	return parts[parts.length - 1] || document.uri.path;
 }

@@ -51,11 +51,18 @@ and `N3` in French, for *niveau*. It is a word a screen reader speaks, not a sym
   with indentation, an icon, or a chevron: a screen reader announces the label
   text and nothing else. The same goes for the collapsed/expanded state and the
   child count.
-- **Keep `placeholder` and `title` extremely short.** VS Code builds the
-  `aria-label` of both the input box and the list by concatenating them
-  (`quickInput.ts`, `update()`, around line 1063), so every word there is read out
-  on *every* open. Documentation belongs in the Alt+F1 help (`buildHelpItems()` in
-  `src/list.ts`), never in the placeholder.
+- **Never set `quickPick.title`, and keep `placeholder` to a few words.** This one
+  was measured with NVDA, not guessed. VS Code builds the `aria-label` of the input
+  box by concatenating placeholder and title (`quickInput.ts`, `update()`, around
+  line 1063). Worse, that label is re-announced on **every fold**: assigning
+  `items` empties the tree, so `quickInputController.ts` (around line 291) drops
+  `aria-activedescendant` from the input box, and with no active row left the
+  screen reader falls back to reading the control itself. A title like
+  `counter.dart, 21 widgets` is therefore spoken again every time the user presses
+  Alt+Left. The re-announcement cannot be avoided — replacing the item array is the
+  only way to fold in a QuickPick — but its *cost* is entirely ours to choose.
+  Documentation belongs in the Alt+F1 help (`buildHelpItems()` in `src/list.ts`),
+  never in the placeholder, and never in a title.
 - **Never show an empty, silent QuickPick.** Every failure path ends in an explicit
   `showWarningMessage`.
 - **Do not override `Ctrl+Shift+O` or `Ctrl+Shift+.`.** They must keep working.
