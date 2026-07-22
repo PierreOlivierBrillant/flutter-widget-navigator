@@ -1,7 +1,24 @@
 # Widget Tree Navigator
 
 Browse the **widget tree inside a Flutter/Dart `build()` method** in a keyboard-navigable
-list, designed to be read by a screen reader.
+list — built for developers who use a screen reader.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
+  <img src="https://img.shields.io/badge/VS%20Code-%E2%89%A5%201.85-007ACC.svg" alt="Requires VS Code 1.85 or newer">
+  <img src="https://img.shields.io/badge/languages-EN%20%7C%20FR-blue.svg" alt="English and French">
+  <img src="https://img.shields.io/badge/built%20for-screen%20readers-6f42c1.svg" alt="Built for screen readers">
+</p>
+
+<!-- Once published, add the live Marketplace badges here:
+  https://img.shields.io/visual-studio-marketplace/v/PierreOlivierBrillant.widget-tree-navigator
+  https://img.shields.io/visual-studio-marketplace/i/PierreOlivierBrillant.widget-tree-navigator
+-->
+
+<p align="center">
+  <img src="demo.gif" width="820"
+       alt="A Dart file is open. Pressing Ctrl+Alt+W opens a searchable list of the widgets inside its build() method. Arrowing down the list scrolls the editor to each widget in turn without moving the cursor. Alt+Left collapses a widget and its children disappear from the list; Alt+Right expands it again. Pressing Enter on a widget places the cursor on it in the code.">
+</p>
 
 `Ctrl+Shift+O` and the breadcrumb bar only show *declarations* — classes, methods, fields.
 Everything inside a `build()` method is made of *expressions*, so the widget hierarchy is
@@ -49,6 +66,23 @@ information. Folding resets on every open.
 
 Helper methods are followed: the widgets built by `Widget _buildButtons() {…}` appear under
 its call site rather than in a separate tree.
+
+## Accessibility
+
+This extension exists for one blind student learning Flutter with NVDA, and every design
+choice follows from that:
+
+- **Depth, child count and fold state live in the text** (`L3 · Padding`), never in
+  indentation, an icon or a chevron — a screen reader announces the label, not the layout.
+- **Announcements are kept short.** The list opens with a three-word prompt; nothing is read
+  out that the user has not asked for.
+- **The key list is one keystroke away** (`Alt+F1`), inside the list, so it never has to be
+  memorised.
+- **No silent dead ends.** Every failure path shows an explicit message instead of an empty,
+  wordless list.
+
+Tested with NVDA on Windows. It relies only on the standard VS Code Quick Pick, so other
+screen readers should work as well.
 
 ## Settings
 
