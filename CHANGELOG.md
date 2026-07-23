@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.1
+
+Two parsing fixes, both reported on real code.
+
+- **Helper methods declared with a concrete widget return type are now followed.**
+  `GridView _buttons() {…}` or `Text _title() {…}` were ignored, so their calls
+  never appeared in the tree; only `Widget`, `List<Widget>` and
+  `PreferredSizeWidget` were recognised. Any capitalised return type that is not
+  a known non-widget now counts.
+- **`NeverScrollableScrollPhysics()` is no longer listed as a widget.** A
+  `ScrollPhysics` suffix rule covers the whole family, and the image providers
+  (`AssetImage`, `NetworkImage`, …) were added to the exclusion list.
+
+Also: the repository and issue links in the manifest now point at the renamed
+repository.
+
 ## 1.0.0
 
 First stable release. Everything below has been in place since the first preview;
